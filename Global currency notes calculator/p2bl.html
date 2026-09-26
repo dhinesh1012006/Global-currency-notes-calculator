@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Global Currency Notes Calculator</title>
+<style>
+body {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.header p {
+  margin: 10px 0 0 0;
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.main-content {
+  padding: 40px;
+}
+
+.country-selector {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.country-selector h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.country-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.country-btn {
+  background: white;
+  border: 2px solid #e9ecef;
+  padding: 15px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.country-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.country-btn.active {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: white;
+  border-color: #ff6b35;
+}
+
+.input-section {
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+}
+
+.input-group {
+  margin-bottom: 25px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.calculate-btn {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.calculate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+}
+
+.result-section {
+  background: #fff;
+  border-radius: 15px;
+  padding: 30px;
+  border: 2px solid #e9ecef;
+  margin-bottom: 30px;
+}
+
+.result-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.result-header h2 {
+  color: #333;
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+}
+
+.total-notes {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 50px;
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.note-card {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.note-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.note-visual {
+  width: 100%;
+  height: 120px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  background-size: cover;
+  background-position: center;
+}
+
+/* Indian Rupee Colors */
+.inr-2000 { background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%); }
+.inr-500 { background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%); }
+.inr-200 { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); }
+.inr-100 { background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); }
+.inr-50 { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); }
+.inr-20 { background: linear-gradient(135deg, #ff5722 0%, #d84315 100%); }
+.inr-10 { background: linear-gradient(135deg, #795548 0%, #5d4037 100%); }
+.inr-5 { background: linear-gradient(135deg, #607d8b 0%, #455a64 100%); }
+.inr-2 { background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%); }
+.inr-1 { background: linear-gradient(135deg, #8bc34a 0%, #689f38 100%); }
+
+/* US Dollar Colors */
+.usd-100 { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
+.usd-50 { background: linear-gradient(135deg, #f57c00 0%, #e65100 100%); }
+.usd-20 { background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%); }
+.usd-10 { background: linear-gradient(135deg, #ff8f00 0%, #f57c00 100%); }
+.usd-5 { background: linear-gradient(135deg, #5d4037 0%, #3e2723 100%); }
+.usd-2 { background: linear-gradient(135deg, #424242 0%, #212121 100%); }
+.usd-1 { background: linear-gradient(135deg, #689f38 0%, #558b2f 100%); }
+
+/* Euro Colors */
+.eur-500 { background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%); }
+.eur-200 { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); }
+.eur-100 { background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); }
+.eur-50 { background: linear-gradient(135deg, #ff5722 0%, #d84315 100%); }
+.eur-20 { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); }
+.eur-10 { background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%); }
+.eur-5 { background: linear-gradient(135deg, #607d8b 0%, #455a64 100%); }
+.eur-2 { background: linear-gradient(135deg, #795548 0%, #5d4037 100%); }
+.eur-1 { background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%); }
+
+/* British Pound Colors */
+.gbp-50 { background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%); }
+.gbp-20 { background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%); }
+.gbp-10 { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); }
+.gbp-5 { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); }
+.gbp-2 { background: linear-gradient(135deg, #795548 0%, #5d4037 100%); }
+.gbp-1 { background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%); }
+
+/* Japanese Yen Colors */
+.jpy-10000 { background: linear-gradient(135deg, #795548 0%, #5d4037 100%); }
+.jpy-5000 { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); }
+.jpy-2000 { background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); }
+.jpy-1000 { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); }
+.jpy-500 { background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%); }
+.jpy-100 { background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%); }
+.jpy-50 { background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%); }
+.jpy-10 { background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%); }
+.jpy-5 { background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%); }
+.jpy-1 { background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%); }
+
+/* Canadian Dollar Colors */
+.cad-100 { background: linear-gradient(135deg, #795548 0%, #5d4037 100%); }
+.cad-50 { background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%); }
+.cad-20 { background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); }
+.cad-10 { background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%); }
+.cad-5 { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); }
+.cad-2 { background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%); }
+.cad-1 { background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%); }
+
+.note-info {
+  text-align: center;
+}
+
+.note-denomination {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.note-count {
+  font-size: 1.1rem;
+  color: #666;
+  background: #f8f9fa;
+  padding: 8px 15px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.method-info {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border-radius: 0 10px 10px 0;
+}
+
+.method-info strong {
+  color: #1976d2;
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.preset-btn {
+  background: #e9ecef;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.preset-btn:hover {
+  background: #ff6b35;
+  color: white;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 4px solid #f44336;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .container {
+    border-radius: 15px;
+  }
+  
+  .header {
+    padding: 20px 15px;
+  }
+  
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .header p {
+    font-size: 1rem;
+  }
+  
+  .main-content {
+    padding: 20px 15px;
+  }
+  
+  .country-selector {
+    padding: 20px 15px;
+  }
+  
+  .country-buttons {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .country-btn {
+    padding: 18px 20px;
+    font-size: 1.1rem;
+    min-height: 60px;
+  }
+  
+  .input-section {
+    padding: 20px 15px;
+  }
+  
+  .input-group input {
+    padding: 18px 15px;
+    font-size: 1.2rem;
+    min-height: 50px;
+  }
+  
+  .calculate-btn {
+    padding: 18px 30px;
+    font-size: 1.3rem;
+    min-height: 60px;
+  }
+  
+  .result-section {
+    padding: 20px 15px;
+  }
+  
+  .notes-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .note-card {
+    padding: 15px;
+  }
+  
+  .note-visual {
+    height: 100px;
+    font-size: 1.3rem;
+  }
+  
+  .preset-buttons {
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .preset-btn {
+    padding: 12px 18px;
+    font-size: 1rem;
+    min-height: 44px;
+    flex: 1;
+    min-width: 80px;
+  }
+  
+  .total-notes {
+    font-size: 1.1rem;
+    padding: 12px 20px;
+  }
+  
+  .method-info {
+    padding: 15px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 5px;
+  }
+  
+  .header h1 {
+    font-size: 1.6rem;
+  }
+  
+  .header p {
+    font-size: 0.9rem;
+  }
+  
+  .main-content {
+    padding: 15px 10px;
+  }
+  
+  .country-selector, .input-section, .result-section {
+    padding: 15px 10px;
+  }
+  
+  .country-btn {
+    font-size: 1rem;
+    padding: 15px;
+  }
+  
+  .input-group input {
+    font-size: 1.1rem;
+  }
+  
+  .calculate-btn {
+    font-size: 1.2rem;
+  }
+  
+  .note-visual {
+    height: 80px;
+    font-size: 1.1rem;
+  }
+  
+  .note-denomination {
+    font-size: 1.1rem;
+  }
+  
+  .note-count {
+    font-size: 1rem;
+    padding: 6px 12px;
+  }
+  
+  .preset-btn {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .country-btn, .calculate-btn, .preset-btn {
+    min-height: 48px;
+  }
+  
+  .country-btn:active {
+    transform: scale(0.98);
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+  }
+  
+  .calculate-btn:active {
+    transform: scale(0.98);
+  }
+  
+  .preset-btn:active {
+    transform: scale(0.95);
+    background: #ff6b35;
+    color: white;
+  }
+  
+  .note-card:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .notes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .country-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) and (orientation: landscape) {
+  .header {
+    padding: 15px;
+  }
+  
+  .header h1 {
+    font-size: 1.4rem;
+  }
+  
+  .main-content {
+    padding: 10px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🌍 Global Currency Calculator</h1>
+    <p>Calculate minimum notes needed for any amount in multiple currencies</p>
+  </div>
+
+  <div class="main-content">
+    <div class="country-selector">
+      <h3>🏛️ Select Currency</h3>
+      <div class="country-buttons">
+        <button class="country-btn active" onclick="selectCountry('india')">
+          🇮🇳 Indian Rupee (INR)
+        </button>
+        <button class="country-btn" onclick="selectCountry('usa')">
+          🇺🇸 US Dollar (USD)
+        </button>
+        <button class="country-btn" onclick="selectCountry('euro')">
+          🇪🇺 Euro (EUR)
+        </button>
+        <button class="country-btn" onclick="selectCountry('uk')">
+          🇬🇧 British Pound (GBP)
+        </button>
+        <button class="country-btn" onclick="selectCountry('japan')">
+          🇯🇵 Japanese Yen (JPY)
+        </button>
+        <button class="country-btn" onclick="selectCountry('canada')">
+          🇨🇦 Canadian Dollar (CAD)
+        </button>
+      </div>
+    </div>
+
+    <div class="input-section">
+      <div class="input-group">
+        <label id="denominationLabel">💰 Available Denominations</label>
+        <input type="text" id="denominations" value="2000,500,200,100,50,20,10,5,2,1">
+        <div class="preset-buttons" id="denominationPresets">
+          <button class="preset-btn" onclick="setPreset('2000,500,200,100,50,20,10,5,2,1')">All Notes</button>
+          <button class="preset-btn" onclick="setPreset('500,200,100,50,20,10')">Common Notes</button>
+          <button class="preset-btn" onclick="setPreset('100,50,20,10,5,2,1')">Small Notes</button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label id="amountLabel">💵 Enter Amount</label>
+        <input type="number" id="amount" placeholder="Enter amount" min="1">
+        <div class="preset-buttons" id="amountPresets">
+          <button class="preset-btn" onclick="setAmount(1000)">1,000</button>
+          <button class="preset-btn" onclick="setAmount(2500)">2,500</button>
+          <button class="preset-btn" onclick="setAmount(5000)">5,000</button>
+          <button class="preset-btn" onclick="setAmount(10000)">10,000</button>
+        </div>
+      </div>
+
+      <button class="calculate-btn" onclick="calculate()">🧮 Calculate Minimum Notes</button>
+    </div>
+
+    <div class="result-section" id="result" style="display: none;">
+      <div class="result-header">
+        <h2>💡 Calculation Result</h2>
+        <div class="total-notes" id="totalNotes"></div>
+      </div>
+      
+      <div class="method-info" id="methodInfo"></div>
+      
+      <div class="notes-grid" id="notesGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentCountry = 'india';
+
+const currencies = {
+  india: {
+    name: 'Indian Rupee',
+    symbol: '₹',
+    code: 'INR',
+    denominations: '2000,500,200,100,50,20,10,5,2,1',
+    presets: {
+      all: '2000,500,200,100,50,20,10,5,2,1',
+      common: '500,200,100,50,20,10',
+      small: '100,50,20,10,5,2,1'
+    },
+    amounts: [1000, 2500, 5000, 10000],
+    prefix: 'inr'
+  },
+  usa: {
+    name: 'US Dollar',
+    symbol: '$',
+    code: 'USD',
+    denominations: '100,50,20,10,5,2,1',
+    presets: {
+      all: '100,50,20,10,5,2,1',
+      common: '20,10,5,1',
+      small: '10,5,2,1'
+    },
+    amounts: [100, 250, 500, 1000],
+    prefix: 'usd'
+  },
+  euro: {
+    name: 'Euro',
+    symbol: '€',
+    code: 'EUR',
+    denominations: '500,200,100,50,20,10,5,2,1',
+    presets: {
+      all: '500,200,100,50,20,10,5,2,1',
+      common: '100,50,20,10,5',
+      small: '50,20,10,5,2,1'
+    },
+    amounts: [100, 250, 500, 1000],
+    prefix: 'eur'
+  },
+  uk: {
+    name: 'British Pound',
+    symbol: '£',
+    code: 'GBP',
+    denominations: '50,20,10,5,2,1',
+    presets: {
+      all: '50,20,10,5,2,1',
+      common: '20,10,5,1',
+      small: '10,5,2,1'
+    },
+    amounts: [100, 250, 500, 1000],
+    prefix: 'gbp'
+  },
+  japan: {
+    name: 'Japanese Yen',
+    symbol: '¥',
+    code: 'JPY',
+    denominations: '10000,5000,2000,1000,500,100,50,10,5,1',
+    presets: {
+      all: '10000,5000,2000,1000,500,100,50,10,5,1',
+      common: '10000,5000,1000,500,100',
+      small: '1000,500,100,50,10,5,1'
+    },
+    amounts: [10000, 25000, 50000, 100000],
+    prefix: 'jpy'
+  },
+  canada: {
+    name: 'Canadian Dollar',
+    symbol: 'C$',
+    code: 'CAD',
+    denominations: '100,50,20,10,5,2,1',
+    presets: {
+      all: '100,50,20,10,5,2,1',
+      common: '50,20,10,5',
+      small: '20,10,5,2,1'
+    },
+    amounts: [100, 250, 500, 1000],
+    prefix: 'cad'
+  }
+};
+
+function selectCountry(country) {
+  currentCountry = country;
+  
+  // Update active button
+  document.querySelectorAll('.country-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  const currency = currencies[country];
+  
+  // Update labels
+  document.getElementById('denominationLabel').textContent = `💰 Available Denominations (${currency.symbol})`;
+  document.getElementById('amountLabel').textContent = `💵 Enter Amount (${currency.symbol})`;
+  
+  // Update denominations
+  document.getElementById('denominations').value = currency.denominations;
+  
+  // Update preset buttons
+  updatePresetButtons(currency);
+  
+  // Clear results
+  document.getElementById('result').style.display = 'none';
+}
+
+function updatePresetButtons(currency) {
+  // Update denomination presets
+  const denominationPresets = document.getElementById('denominationPresets');
+  denominationPresets.innerHTML = `
+    <button class="preset-btn" onclick="setPreset('${currency.presets.all}')">All Notes</button>
+    <button class="preset-btn" onclick="setPreset('${currency.presets.common}')">Common Notes</button>
+    <button class="preset-btn" onclick="setPreset('${currency.presets.small}')">Small Notes</button>
+  `;
+  
+  // Update amount presets
+  const amountPresets = document.getElementById('amountPresets');
+  amountPresets.innerHTML = currency.amounts.map(amount => 
+    `<button class="preset-btn" onclick="setAmount(${amount})">${currency.symbol}${amount.toLocaleString()}</button>`
+  ).join('');
+}
+
+function setPreset(denominations) {
+  document.getElementById('denominations').value = denominations;
+}
+
+function setAmount(amount) {
+  document.getElementById('amount').value = amount;
+}
+
+function calculate() {
+  const denominationsInput = document.getElementById("denominations").value;
+  const amountInput = document.getElementById("amount").value;
+  const resultDiv = document.getElementById("result");
+  const currency = currencies[currentCountry];
+
+  // Validation
+  if (!denominationsInput.trim() || !amountInput || amountInput <= 0) {
+    resultDiv.innerHTML = '<div class="error-message">⚠️ Please enter valid denominations and amount greater than 0</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+
+  const notes = denominationsInput.split(",")
+    .map(x => parseInt(x.trim()))
+    .filter(x => x > 0 && !isNaN(x));
+  const amount = parseInt(amountInput);
+
+  if (notes.length === 0) {
+    resultDiv.innerHTML = '<div class="error-message">⚠️ Please enter valid denominations</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+
+  notes.sort((a, b) => b - a);
+  let result;
+
+  if (amount > 10000) {
+    result = greedyMinNotes(notes, amount);
+    displayResult(result, amount, 'Greedy Algorithm (Optimized for large amounts)', currency);
+  } else {
+    result = dpMinNotes(notes, amount);
+    displayResult(result, amount, 'Dynamic Programming (Guaranteed optimal solution)', currency);
+  }
+}
+
+function greedyMinNotes(notes, amount) {
+  let totalNotes = 0;
+  let noteBreakdown = {};
+  let remaining = amount;
+
+  for (let note of notes) {
+    if (remaining >= note) {
+      let count = Math.floor(remaining / note);
+      remaining -= count * note;
+      totalNotes += count;
+      noteBreakdown[note] = count;
+    }
+  }
+
+  return { 
+    minNotes: totalNotes, 
+    breakdown: noteBreakdown,
+    possible: remaining === 0
+  };
+}
+
+function dpMinNotes(notes, amount) {
+  let dp = new Array(amount + 1).fill(Infinity);
+  let lastUsed = new Array(amount + 1).fill(-1);
+  dp[0] = 0;
+
+  for (let i = 1; i <= amount; i++) {
+    for (let note of notes) {
+      if (note <= i && dp[i - note] !== Infinity && dp[i - note] + 1 < dp[i]) {
+        dp[i] = dp[i - note] + 1;
+        lastUsed[i] = note;
+      }
+    }
+  }
+
+  // Backtrack to get breakdown
+  let noteBreakdown = {};
+  let temp = amount;
+  while (temp > 0 && lastUsed[temp] !== -1) {
+    let note = lastUsed[temp];
+    noteBreakdown[note] = (noteBreakdown[note] || 0) + 1;
+    temp -= note;
+  }
+
+  return { 
+    minNotes: dp[amount] === Infinity ? -1 : dp[amount], 
+    breakdown: noteBreakdown,
+    dp: dp,
+    possible: dp[amount] !== Infinity
+  };
+}
+
+function displayResult(result, amount, method, currency) {
+  const resultDiv = document.getElementById("result");
+  const totalNotesDiv = document.getElementById("totalNotes");
+  const methodInfoDiv = document.getElementById("methodInfo");
+  const notesGridDiv = document.getElementById("notesGrid");
+
+  if (!result.possible || result.minNotes === -1) {
+    resultDiv.innerHTML = '<div class="error-message">❌ Cannot make this amount with the given denominations</div>';
+    resultDiv.style.display = 'block';
+    return;
+  }
+
+  totalNotesDiv.textContent = `Total Notes Required: ${result.minNotes}`;
+  methodInfoDiv.innerHTML = `<strong>Method Used:</strong> ${method}<br><strong>Amount:</strong> ${currency.symbol}${amount.toLocaleString()}<br><strong>Currency:</strong> ${currency.name} (${currency.code})`;
+
+  // Create note cards
+  let notesHTML = '';
+
+  for (let [denomination, count] of Object.entries(result.breakdown)) {
+    if (count > 0) {
+      const colorClass = `${currency.prefix}-${denomination}`;
+      notesHTML += `
+        <div class="note-card">
+          <div class="note-visual ${colorClass}">
+            <div>${currency.symbol}${denomination}</div>
+          </div>
+          <div class="note-info">
+            <div class="note-denomination">${currency.symbol}${denomination} Note</div>
+            <div class="note-count">${count} ${count === 1 ? 'note' : 'notes'}</div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  notesGridDiv.innerHTML = notesHTML;
+  resultDiv.style.display = 'block';
+}
+
+// Auto-calculate on Enter key
+document.getElementById('amount').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    calculate();
+  }
+});
+
+document.getElementById('denominations').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    calculate();
+  }
+});
+
+// Initialize with India
+selectCountry('india');
+</script>
+
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'986c12f1942896a8',t:'MTc1OTE1NTEzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
